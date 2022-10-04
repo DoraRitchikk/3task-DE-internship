@@ -44,7 +44,16 @@ Inner Join film_category ON film.film_id = film_category.film_id
 Inner Join category ON film_category.category_id = category.category_id
 WHERE category.name like 'Children'
 GROUP BY film_actor.actor_id
-ORDER BY count(film.film_id) DESC
+HAVING count(film.film_id) IN (
+	SELECT DISTINCT count(film.film_id) FROM film_actor
+	Inner Join film ON film_actor.film_id = film.film_id
+	Inner Join film_category ON film.film_id = film_category.film_id
+	Inner Join category ON film_category.category_id = category.category_id
+	WHERE category.name like 'Children'
+	GROUP BY film_actor.actor_id
+	ORDER BY count(film.film_id) DESC
+	LIMIT 3)
+	ORDER BY count(film.film_id) DESC
 
 6.Вывести города с количеством активных и неактивных клиентов 
 (активный — customer.active = 1).
